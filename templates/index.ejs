@@ -1,0 +1,65 @@
+<html>
+<body>
+<p>
+YNAB
+<% if (budget) {%>
+<%=budget.name %>
+    <table>
+    <tbody>
+<% for (let account of budget.accounts) {%>
+    <tr class="row">
+<td class="col"><%=account.id%></td><td class="col"><%=account.name%></td>
+    </tr>
+<%} %>
+    </tbody>
+    </table>
+<%} else {%>
+No YNAB account connected
+<%} %>
+<a href="/connect/ynab">CONNECT YNAB</a>
+</p>
+<p>
+Banks
+<% if (connections) {%>
+Banks Data:
+<% for(let connection of connections) {%>
+<div><%=connection.connector.name%></div>
+    <a href="/connect/budgea?disconnect=<%= connection.connection.id %>">DISCONNECT</a>
+<% if (connection.connection.error) {%>
+Errored ! (<%= connection.connection.error %>) <a href="/connect/budgea?reconnect=<%=connection.connection.id%>">FIX</a>
+<% } %>
+<table>
+<% for (let account of connection.accounts) {%>
+    <tr><td><%=account.id%></td><td><%= account.name %></td><td>(<%=account.balance%>)</td></tr>
+<%} %>
+</table>
+    <br>
+<%} %>
+<%} else {%>
+No Bank connected
+<%} %>
+<a href="/connect/budgea">CONNECT NEW BANK</a>
+</p>
+<p>
+Mapping
+<% if (connections && budget && mapping) {%>
+<table>
+    <thead>
+        <tr>
+            <td>Banque</td><td>Actual</td>
+        </tr>
+    </thead>
+    <% for (let connection of connections){%>
+    <% for (let account of connection.accounts){%>
+    <% for (let mapp of mapping) {%>
+    <% if (mapp.budgea == account.id) {%>
+    <tr><td><%=mapp.accountName %></td><td><%=mapp.actualAccountName %></td></tr>
+    <%} %>
+    <%} %>
+    <%} %>
+    <%} %>
+</table>
+<%} %>
+</p>
+</body>
+</html>
